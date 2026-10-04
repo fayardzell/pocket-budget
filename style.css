@@ -1,12 +1,147 @@
+/* Color palette: change a color here and it updates everywhere */
+:root {
+  --bg: #f5f6f8;          /* page background: soft gray */
+  --card: #ffffff;        /* card background */
+  --ink: #1e293b;         /* main text: dark slate */
+  --muted: #64748b;       /* secondary text: labels, dates */
+  --line: #e2e8f0;        /* borders and dividers */
+  --income: #16a34a;      /* green */
+  --income-soft: #dcfce7;
+  --expense: #dc2626;     /* red */
+  --expense-soft: #fee2e2;
+  --radius: 14px;
+}
+
+* { box-sizing: border-box; }
+
 body {
   margin: 0;
-  font-family: system-ui, sans-serif;
-  background: #f4f6f3;
-  color: #1b221e;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--ink);
 }
 
 main {
   max-width: 480px;
   margin: 0 auto;
-  padding: 16px;
+  padding: 20px 16px 40px;
+  display: grid;
+  gap: 16px;
 }
+
+h1 { font-size: 1.5rem; margin: 0; }
+h2 { font-size: 1rem; margin: 0 0 12px; }
+.month { margin: 2px 0 0; color: var(--muted); }
+
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+}
+
+/* ---------- Summary ---------- */
+.summary {
+  background: var(--ink);
+  color: #fff;
+  border-radius: var(--radius);
+  padding: 20px 16px 16px;
+  display: grid;
+  gap: 16px;
+}
+.label {
+  display: block;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.75;
+}
+.balance .amount { font-size: 2.2rem; font-weight: 700; }
+.totals { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.total {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+.total .amount { font-size: 1.15rem; font-weight: 600; }
+.total.income .amount { color: #4ade80; }   /* lighter green: readable on dark */
+.total.expense .amount { color: #f87171; }  /* lighter red: readable on dark */
+.amount { font-variant-numeric: tabular-nums; }  /* digits line up */
+
+/* ---------- Form ---------- */
+#entry-form { display: grid; gap: 12px; }
+#entry-form h2 { margin: 0; }
+
+.type-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: var(--bg);
+  border-radius: 10px;
+  padding: 4px;
+}
+.type-toggle input { position: absolute; opacity: 0; } /* hide the real radio circles */
+.type-toggle label {
+  text-align: center;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+}
+#type-expense:checked + label { background: var(--expense-soft); color: var(--expense); }
+#type-income:checked + label  { background: var(--income-soft);  color: var(--income); }
+.type-toggle input:focus-visible + label { outline: 2px solid var(--ink); }
+
+.field { display: grid; gap: 4px; font-size: 0.85rem; color: var(--muted); }
+.field small { font-size: inherit; opacity: 0.8; }
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+input, select, button { font: inherit; }
+.field input, .field select {
+  width: 100%;
+  font-size: 1rem;     /* 16px+ stops iPhones from zooming in on tap */
+  color: var(--ink);
+  padding: 11px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fff;
+}
+.field input:focus, .field select:focus {
+  outline: none;
+  border-color: var(--ink);
+}
+#amount { font-size: 1.4rem; font-weight: 600; }
+
+.add-btn {
+  padding: 14px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--ink);
+  color: #fff;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+}
+.add-btn:active { transform: scale(0.98); }
+
+/* ---------- Entry list ---------- */
+.entries { list-style: none; margin: 0; padding: 0; }
+.entry {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0 12px 12px;
+  border-bottom: 1px solid var(--line);
+  border-left: 3px solid transparent;
+}
+.entry:last-child { border-bottom: 0; }
+.entry.income  { border-left-color: var(--income); }
+.entry.expense { border-left-color: var(--expense); }
+
+.entry-main, .entry-side { display: grid; gap: 2px; }
+.entry-side { text-align: right; }
+.entry-category { font-weight: 600; }
+.entry-note, .entry-date { font-size: 0.85rem; color: var(--muted); }
+.entry-amount { font-weight: 600; font-variant-numeric: tabular-nums; }
+.entry.income  .entry-amount { color: var(--income); }
+.entry.expense .entry-amount { color: var(--expense); }

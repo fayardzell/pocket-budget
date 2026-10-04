@@ -11,8 +11,101 @@
 </head>
 <body>
   <main>
-    <h1>Pocket Budget</h1>
-    <p id="status">Loading…</p>
+    <header>
+      <h1>Pocket Budget</h1>
+      <p class="month" id="month-label">October 2026</p>
+    </header>
+
+    <!-- Summary: this month's totals -->
+    <section class="summary" aria-label="This month">
+      <div class="balance">
+        <span class="label">Balance</span>
+        <span class="amount" id="balance">$0.00</span>
+      </div>
+      <div class="totals">
+        <div class="total income">
+          <span class="label">Income</span>
+          <span class="amount" id="income-total">$0.00</span>
+        </div>
+        <div class="total expense">
+          <span class="label">Expenses</span>
+          <span class="amount" id="expense-total">$0.00</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Add form -->
+    <form id="entry-form" class="card">
+      <h2>Add entry</h2>
+
+      <!-- Two radio buttons styled as a toggle; only one can be picked -->
+      <div class="type-toggle" role="radiogroup" aria-label="Type">
+        <input type="radio" name="type" id="type-expense" value="expense" checked>
+        <label for="type-expense">Expense</label>
+        <input type="radio" name="type" id="type-income" value="income">
+        <label for="type-income">Income</label>
+      </div>
+
+      <label class="field">
+        <span>Amount</span>
+        <!-- inputmode="decimal" shows the number keypad on phones -->
+        <input type="number" id="amount" name="amount" inputmode="decimal"
+               step="0.01" min="0.01" placeholder="0.00" required>
+      </label>
+
+      <div class="row">
+        <label class="field">
+          <span>Category</span>
+          <select id="category" name="category">
+            <option>Food</option>
+            <option>Gas</option>
+            <option>Supplies</option>
+            <option>Bills</option>
+            <option>Fun</option>
+            <option selected>Other</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Date</span>
+          <input type="date" id="date" name="date">
+        </label>
+      </div>
+
+      <label class="field">
+        <span>Note <small>(optional)</small></span>
+        <input type="text" id="note" name="note" placeholder="e.g. Smith driveway job">
+      </label>
+
+      <button type="submit" class="add-btn">Add</button>
+    </form>
+
+    <!-- Entry list -->
+    <section class="card">
+      <h2>Entries</h2>
+      <ul class="entries" id="entries">
+        <!-- Sample entries to preview the design; replaced by JavaScript in Step 3 -->
+        <li class="entry income">
+          <div class="entry-main">
+            <span class="entry-category">Jobs</span>
+            <span class="entry-note">Smith driveway</span>
+          </div>
+          <div class="entry-side">
+            <span class="entry-amount">+$250.00</span>
+            <span class="entry-date">Oct 3</span>
+          </div>
+        </li>
+        <li class="entry expense">
+          <div class="entry-main">
+            <span class="entry-category">Gas</span>
+            <span class="entry-note">Truck fill-up</span>
+          </div>
+          <div class="entry-side">
+            <span class="entry-amount">−$64.20</span>
+            <span class="entry-date">Oct 2</span>
+          </div>
+        </li>
+      </ul>
+    </section>
   </main>
 </body>
 </html>

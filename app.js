@@ -1,2 +1,1 @@
-// Proves the JavaScript file is connected: it replaces "Loading…" on the page.
-document.getElementById("status").textContent = "JavaScript is connected.";
+// Behavior comes in Step 3. For now the page is layout only.
