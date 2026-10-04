@@ -129,6 +129,7 @@ function render() {
 function createEntryItem(entry) {
   const li = document.createElement("li");
   li.className = `entry ${entry.type}`;
+  li.dataset.id = entry.id; // becomes data-id="…" so the delete button knows which entry this is
 
   const sign = entry.type === "income" ? "+" : "−";
   li.innerHTML = `
@@ -140,7 +141,8 @@ function createEntryItem(entry) {
     <div class="entry-side">
       <span class="entry-amount"></span>
       <span class="entry-date"></span>
-    </div>`;
+    </div>
+    <button type="button" class="delete-btn" aria-label="Delete entry">×</button>`;
 
   // Fill in the text with textContent, never innerHTML, so a note like "<b>hi</b>"
   // shows up as plain text instead of being treated as code.
@@ -179,6 +181,25 @@ form.addEventListener("submit", (event) => {
   amountInput.value = "";
   noteInput.value = "";
   amountInput.focus();
+});
+
+// Tapping × on an entry. One listener on the whole list ("event delegation")
+// handles every delete button, including ones added later.
+list.addEventListener("click", (event) => {
+  const button = event.target.closest(".delete-btn");
+  if (!button) return; // the tap wasn't on a delete button
+
+  const id = button.closest(".entry").dataset.id;
+  const entry = entries.find((e) => e.id === id);
+  if (!entry) return;
+
+  const sign = entry.type === "income" ? "+" : "−";
+  const description = `${entry.category} ${sign}${formatMoney(entry.amountCents)} on ${formatDate(entry.date)}`;
+  if (!confirm(`Delete this entry?\n\n${description}`)) return; // tapped Cancel
+
+  entries = entries.filter((e) => e.id !== id); // keep every entry except this one
+  saveEntries();
+  render();
 });
 
 // ===== Start-up =====

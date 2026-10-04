@@ -176,5 +176,25 @@ input, select, button { font: inherit; }
 .entry.income  .entry-amount { color: var(--income); }
 .entry.expense .entry-amount { color: var(--expense); }
 
+/* × button: quiet gray until touched; 36px square is a comfortable thumb target */
+.delete-btn {
+  width: 36px;
+  height: 36px;
+  flex: none;
+  margin-left: -4px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.delete-btn:hover, .delete-btn:focus-visible {
+  background: var(--expense-soft);
+  color: var(--expense);
+  outline: none;
+}
+
 .empty { margin: 0; padding: 8px 0; color: var(--muted); text-align: center; }
 .empty[hidden] { display: none; }
