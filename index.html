@@ -62,14 +62,8 @@
       <div class="row">
         <label class="field">
           <span>Category</span>
-          <select id="category" name="category">
-            <option>Food</option>
-            <option>Gas</option>
-            <option>Supplies</option>
-            <option>Bills</option>
-            <option>Fun</option>
-            <option selected>Other</option>
-          </select>
+          <!-- Options are filled in by app.js, based on Expense/Income -->
+          <select id="category" name="category"></select>
         </label>
         <label class="field">
           <span>Date</span>
@@ -88,31 +82,9 @@
     <!-- Entry list -->
     <section class="card">
       <h2>Entries</h2>
-      <ul class="entries" id="entries">
-        <!-- Sample entries to preview the design; replaced by JavaScript in Step 3 -->
-        <li class="entry income">
-          <span class="entry-badge" aria-hidden="true">J</span>
-          <div class="entry-main">
-            <span class="entry-category">Jobs</span>
-            <span class="entry-note">Smith driveway</span>
-          </div>
-          <div class="entry-side">
-            <span class="entry-amount">+$250.00</span>
-            <span class="entry-date">Oct 3</span>
-          </div>
-        </li>
-        <li class="entry expense">
-          <span class="entry-badge" aria-hidden="true">G</span>
-          <div class="entry-main">
-            <span class="entry-category">Gas</span>
-            <span class="entry-note">Truck fill-up</span>
-          </div>
-          <div class="entry-side">
-            <span class="entry-amount">−$64.20</span>
-            <span class="entry-date">Oct 2</span>
-          </div>
-        </li>
-      </ul>
+      <!-- Filled in by app.js -->
+      <ul class="entries" id="entries"></ul>
+      <p class="empty" id="empty">No entries yet. Add your first one above.</p>
     </section>
   </main>
 </body>
