@@ -4,10 +4,38 @@ const CATEGORIES = {
   income: ["Jobs", "Other income"],
 };
 
+// The name our data is saved under in the browser's localStorage
+const STORAGE_KEY = "pocket-budget.entries";
+
 // ===== State: the one list of entries. The screen is drawn from this. =====
 // Each entry looks like:
 // { id: "…", type: "expense", amountCents: 6420, category: "Gas", date: "2026-10-02", note: "Truck fill-up" }
-let entries = [];
+let entries = loadEntries();
+
+// ===== Saving and loading =====
+
+// Read saved entries. If there's nothing saved yet (first visit), start with an empty list.
+function loadEntries() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    return saved ? JSON.parse(saved) : [];
+  } catch (error) {
+    // Storage blocked (some private-browsing modes) or the saved text is damaged.
+    // Start empty instead of crashing the whole app.
+    console.error("Could not load saved entries:", error);
+    return [];
+  }
+}
+
+// Write all entries to storage. Called after every change.
+function saveEntries() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+  } catch (error) {
+    console.error("Could not save entries:", error);
+    alert("Couldn't save. Your browser may be blocking storage (private mode?).");
+  }
+}
 
 // ===== Grab the page elements we need (once) =====
 const form = document.getElementById("entry-form");
@@ -118,6 +146,7 @@ form.addEventListener("submit", (event) => {
     date: dateInput.value || todayISO(),
     note: noteInput.value.trim(),
   });
+  saveEntries();
   render();
 
   // Get ready for the next entry: clear amount + note, keep type/category/date
