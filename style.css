@@ -142,6 +142,12 @@ input, select, button { font: inherit; }
   cursor: pointer;
 }
 .add-btn:active { transform: scale(0.98); }
+.add-btn.added { background: #a7f3d0; }  /* lighter green while it says "Added ✓" */
+
+/* Hide the little up/down arrows in the Amount box (desktop browsers) */
+#amount::-webkit-outer-spin-button,
+#amount::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+#amount { -moz-appearance: textfield; appearance: textfield; }
 
 /* ---------- Entry list ---------- */
 .entries { list-style: none; margin: 0; padding: 0; }
@@ -153,6 +159,34 @@ input, select, button { font: inherit; }
   border-bottom: 1px solid var(--line);
 }
 .entry:last-child { border-bottom: 0; }
+
+/* Month group heading: "October 2026 ... +$1,185.50" */
+.month-heading {
+  display: flex;
+  justify-content: space-between;
+  padding: 18px 0 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  border-bottom: 1px solid var(--line);
+}
+.month-heading:first-child { padding-top: 0; }
+.month-net { font-variant-numeric: tabular-nums; }
+.month-net.positive { color: var(--income); }
+.month-net.negative { color: var(--expense); }
+
+/* A newly added entry glows green, then fades back to normal */
+.entry.just-added { animation: flash 1.4s ease-out; }
+@keyframes flash {
+  from { background: var(--income-soft); }
+  to   { background: transparent; }
+}
+/* People who turn off animations in their phone settings get no flash */
+@media (prefers-reduced-motion: reduce) {
+  .entry.just-added { animation: none; }
+}
 
 /* Rounded square with the category's first letter */
 .entry-badge {

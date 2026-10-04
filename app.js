@@ -11,6 +11,7 @@ const STORAGE_KEY = "pocket-budget.entries";
 // Each entry looks like:
 // { id: "…", type: "expense", amountCents: 6420, category: "Gas", date: "2026-10-02", note: "Truck fill-up" }
 let entries = loadEntries();
+let justAddedId = null; // the entry to highlight after tapping Add
 
 // ===== Saving and loading =====
 
@@ -43,6 +44,7 @@ const amountInput = document.getElementById("amount");
 const categorySelect = document.getElementById("category");
 const dateInput = document.getElementById("date");
 const noteInput = document.getElementById("note");
+const addButton = form.querySelector(".add-btn");
 const list = document.getElementById("entries");
 const emptyMessage = document.getElementById("empty");
 const monthLabel = document.getElementById("month-label");
@@ -73,6 +75,24 @@ function formatDate(iso) {
   return new Date(year, month - 1, day).toLocaleDateString("en-US", { month: "short", day: "numeric" });
 }
 
+// "2026-10" -> "October 2026"
+function formatMonth(yearMonth) {
+  const [year, month] = yearMonth.split("-").map(Number);
+  return new Date(year, month - 1, 1).toLocaleDateString("en-US", { month: "long", year: "numeric" });
+}
+
+// Add up income and expenses for one month, e.g. monthTotals("2026-10")
+function monthTotals(yearMonth) {
+  let incomeCents = 0;
+  let expenseCents = 0;
+  for (const entry of entries) {
+    if (!entry.date.startsWith(yearMonth)) continue; // skip other months
+    if (entry.type === "income") incomeCents += entry.amountCents;
+    else expenseCents += entry.amountCents;
+  }
+  return { incomeCents, expenseCents, balanceCents: incomeCents - expenseCents };
+}
+
 // Which button is picked in the Expense/Income toggle?
 function selectedType() {
   return form.elements.type.value; // "expense" or "income"
@@ -92,17 +112,9 @@ function fillCategories() {
 // ===== Draw the summary card: totals for the current month =====
 function renderSummary() {
   const thisMonth = todayISO().slice(0, 7); // "2026-10-04" -> "2026-10"
+  const { incomeCents, expenseCents, balanceCents } = monthTotals(thisMonth);
 
-  let incomeCents = 0;
-  let expenseCents = 0;
-  for (const entry of entries) {
-    if (!entry.date.startsWith(thisMonth)) continue; // skip other months
-    if (entry.type === "income") incomeCents += entry.amountCents;
-    else expenseCents += entry.amountCents;
-  }
-  const balanceCents = incomeCents - expenseCents;
-
-  monthLabel.textContent = new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" });
+  monthLabel.textContent = formatMonth(thisMonth);
   incomeTotalEl.textContent = formatMoney(incomeCents);
   expenseTotalEl.textContent = formatMoney(expenseCents);
   balanceEl.textContent = formatMoney(balanceCents); // negative shows as "-$12.00"
@@ -119,10 +131,31 @@ function render() {
   );
 
   list.innerHTML = "";
+  let currentMonth = null;
   for (const entry of sorted) {
+    // The list is sorted newest first, so when the month changes we start a new group
+    const entryMonth = entry.date.slice(0, 7);
+    if (entryMonth !== currentMonth) {
+      currentMonth = entryMonth;
+      list.append(createMonthHeading(entryMonth));
+    }
     list.append(createEntryItem(entry));
   }
   emptyMessage.hidden = entries.length > 0;
+  justAddedId = null; // the flash only plays once
+}
+
+// Heading row for a month group: "October 2026 ... +$1,185.50"
+function createMonthHeading(yearMonth) {
+  const li = document.createElement("li");
+  li.className = "month-heading";
+  const { balanceCents } = monthTotals(yearMonth);
+  const net = (balanceCents < 0 ? "−" : "+") + formatMoney(Math.abs(balanceCents));
+  li.innerHTML = `<span></span><span class="month-net"></span>`;
+  li.children[0].textContent = formatMonth(yearMonth);
+  li.children[1].textContent = net;
+  li.children[1].classList.add(balanceCents < 0 ? "negative" : "positive");
+  return li;
 }
 
 // Build one <li> for an entry (same structure as the design in Step 2)
@@ -130,6 +163,7 @@ function createEntryItem(entry) {
   const li = document.createElement("li");
   li.className = `entry ${entry.type}`;
   li.dataset.id = entry.id; // becomes data-id="…" so the delete button knows which entry this is
+  if (entry.id === justAddedId) li.classList.add("just-added"); // brief highlight (see style.css)
 
   const sign = entry.type === "income" ? "+" : "−";
   li.innerHTML = `
@@ -154,6 +188,19 @@ function createEntryItem(entry) {
   return li;
 }
 
+// Briefly change the Add button to "Added ✓" so you know it worked,
+// even when the list is scrolled off-screen on a phone
+let addedTimer;
+function showAdded() {
+  addButton.textContent = "Added ✓";
+  addButton.classList.add("added");
+  clearTimeout(addedTimer); // if you add twice quickly, restart the countdown
+  addedTimer = setTimeout(() => {
+    addButton.textContent = "Add";
+    addButton.classList.remove("added");
+  }, 1200); // milliseconds
+}
+
 // ===== Events: things that happen when you interact =====
 
 // Switching Expense/Income swaps the category choices
@@ -166,16 +213,19 @@ form.addEventListener("submit", (event) => {
   const amountCents = Math.round(Number(amountInput.value) * 100);
   if (!(amountCents > 0)) return; // the "required" + "min" rules on the input already block this; just a safety net
 
-  entries.push({
+  const entry = {
     id: Date.now().toString(36), // a unique-enough id based on the current time
     type: selectedType(),
     amountCents,
     category: categorySelect.value,
     date: dateInput.value || todayISO(),
     note: noteInput.value.trim(),
-  });
+  };
+  entries.push(entry);
+  justAddedId = entry.id;
   saveEntries();
   render();
+  showAdded();
 
   // Get ready for the next entry: clear amount + note, keep type/category/date
   amountInput.value = "";
