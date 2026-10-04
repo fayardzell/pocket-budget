@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pocket Budget: design options</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&family=Space+Grotesk:wght@400;500;700&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  /* Page that holds the three mockups */
+  body { margin: 0; background: #d9dde3; font-family: system-ui, sans-serif; padding: 20px 12px 40px; }
+  .intro { text-align: center; margin: 0 0 20px; color: #333; }
+  .options { display: flex; flex-wrap: wrap; justify-content: center; gap: 24px; }
+  .option > h2 { text-align: center; margin: 0 0 4px; font: 700 18px system-ui, sans-serif; color: #222; }
+  .option > p { text-align: center; margin: 0 0 10px; font-size: 13px; color: #555; }
+  .phone { width: 340px; border-radius: 28px; overflow: hidden; box-shadow: 0 12px 40px rgba(0,0,0,.18); }
+
+  /* ---------- Shared layout (each theme fills in the variables) ---------- */
+  .app { background: var(--bg); color: var(--ink); font-family: var(--font); padding: 22px 16px 24px; display: grid; gap: 16px; }
+  .app h1 { margin: 0; font-size: 1.45rem; font-weight: 800; letter-spacing: -0.02em; }
+  .app .month { margin: 2px 0 0; color: var(--muted); font-size: .9rem; }
+  .app h3 { margin: 0 0 12px; font-size: 1rem; }
+  .summary { border-radius: var(--radius); padding: 20px 18px 16px; display: grid; gap: 14px; background: var(--sum-bg); color: var(--sum-ink); position: relative; overflow: hidden; }
+  .label { display: block; font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; opacity: .75; }
+  .big { font-size: 2.3rem; font-weight: 800; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+  .totals { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .total { border-radius: calc(var(--radius) - 6px); padding: 10px 12px; background: var(--tot-bg); }
+  .total b { font-size: 1.1rem; font-variant-numeric: tabular-nums; }
+  .total.in b { color: var(--in-on-sum); }
+  .total.out b { color: var(--out-on-sum); }
+  .card { background: var(--card); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); border: var(--card-border); }
+  form.card { display: grid; gap: 12px; }
+  .toggle { display: grid; grid-template-columns: 1fr 1fr; background: var(--field); border-radius: 12px; padding: 4px; }
+  .toggle span { text-align: center; padding: 10px; border-radius: 9px; font-weight: 700; color: var(--muted); }
+  .toggle .on { background: var(--out-soft); color: var(--out); }
+  .field { display: grid; gap: 4px; font-size: .8rem; color: var(--muted); }
+  .input { padding: 11px 12px; border-radius: 12px; background: var(--field); border: 1px solid var(--line); color: var(--muted); font-size: 1rem; }
+  .input.amt { font-size: 1.5rem; font-weight: 700; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .btn { padding: 14px; border-radius: 12px; text-align: center; font-weight: 700; background: var(--btn); color: var(--btn-ink); }
+  ul { list-style: none; margin: 0; padding: 0; }
+  li { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+  li:last-child { border-bottom: 0; }
+  .dot { width: 36px; height: 36px; border-radius: 11px; display: grid; place-items: center; font-weight: 800; flex: none; }
+  li.in .dot { background: var(--in-soft); color: var(--in); }
+  li.out .dot { background: var(--out-soft); color: var(--out); }
+  .meta { flex: 1; display: grid; gap: 1px; }
+  .meta b { font-weight: 700; }
+  .meta small, .side small { color: var(--muted); font-size: .8rem; }
+  .side { text-align: right; display: grid; gap: 1px; }
+  .side b { font-variant-numeric: tabular-nums; }
+  li.in .side b { color: var(--in); }
+  li.out .side b { color: var(--out); }
+
+  /* ---------- A: Bank-app card ---------- */
+  .theme-a {
+    --font: "Manrope", sans-serif; --radius: 18px;
+    --bg: #f4f6f8; --ink: #0f172a; --muted: #64748b; --line: #e5e9f0; --card: #fff; --field: #f4f6f8;
+    --shadow: 0 2px 10px rgba(15,23,42,.06); --card-border: 0;
+    --in: #16a34a; --in-soft: #dcfce7; --out: #dc2626; --out-soft: #fee2e2;
+    --sum-bg: linear-gradient(135deg, #065f46 0%, #0f766e 55%, #0e7490 100%); --sum-ink: #fff;
+    --tot-bg: rgba(255,255,255,.14); --in-on-sum: #bbf7d0; --out-on-sum: #fecaca;
+    --btn: #0f172a; --btn-ink: #fff;
+  }
+  /* Decorative circles that make the card look like a bank card */
+  .theme-a .summary::before, .theme-a .summary::after { content: ""; position: absolute; border-radius: 50%; background: rgba(255,255,255,.08); }
+  .theme-a .summary::before { width: 220px; height: 220px; right: -70px; top: -90px; }
+  .theme-a .summary::after { width: 140px; height: 140px; right: 40px; top: 40px; }
+  .theme-a .summary > * { position: relative; }
+
+  /* ---------- B: Midnight (full dark) ---------- */
+  .theme-b {
+    --font: "Space Grotesk", sans-serif; --radius: 16px;
+    --bg: #0b0f14; --ink: #e8edf2; --muted: #8a96a3; --line: #1f2731; --card: #121820; --field: #0b0f14;
+    --shadow: none; --card-border: 1px solid #1f2731;
+    --in: #34d399; --in-soft: rgba(52,211,153,.12); --out: #fb7185; --out-soft: rgba(251,113,133,.12);
+    --sum-bg: #121820; --sum-ink: #e8edf2;
+    --tot-bg: #0b0f14; --in-on-sum: #34d399; --out-on-sum: #fb7185;
+    --btn: #34d399; --btn-ink: #062018;
+  }
+  .theme-b .summary { border: 1px solid #1f2731; }
+  .theme-b .big { color: #fff; text-shadow: 0 0 24px rgba(52,211,153,.35); }
+
+  /* ---------- C: Soft & friendly ---------- */
+  .theme-c {
+    --font: "Nunito", sans-serif; --radius: 24px;
+    --bg: #fbf8f4; --ink: #2d2a32; --muted: #8b8594; --line: #efe9e1; --card: #fff; --field: #f6f2ec;
+    --shadow: 0 4px 16px rgba(80,60,40,.06); --card-border: 0;
+    --in: #15803d; --in-soft: #dcfce7; --out: #e11d48; --out-soft: #ffe4e6;
+    --sum-bg: linear-gradient(160deg, #d1fae5 0%, #fef3c7 100%); --sum-ink: #2d2a32;
+    --tot-bg: rgba(255,255,255,.7); --in-on-sum: #15803d; --out-on-sum: #e11d48;
+    --btn: #2d2a32; --btn-ink: #fff;
+  }
+  .theme-c .dot { border-radius: 50%; }
+  .theme-c .btn, .theme-c .toggle, .theme-c .toggle span { border-radius: 999px; }
+</style>
+</head>
+<body>
+  <p class="intro">Same app, three directions. Pick one, or mix parts.</p>
+  <div class="options" id="options"></div>
+
+<script>
+  // One copy of the mockup markup, stamped out three times with a different theme class.
+  const themes = [
+    { cls: "theme-a", name: "A · Bank card", desc: "Manrope font, gradient card, light & crisp" },
+    { cls: "theme-b", name: "B · Midnight", desc: "Space Grotesk font, full dark, glowing accents" },
+    { cls: "theme-c", name: "C · Soft", desc: "Nunito font, warm pastels, pill shapes" },
+  ];
+  const mockup = `
+    <div class="app">
+      <div><h1>Pocket Budget</h1><p class="month">October 2026</p></div>
+      <section class="summary">
+        <div><span class="label">Balance</span><span class="big">$1,185.80</span></div>
+        <div class="totals">
+          <div class="total in"><span class="label">Income</span><b>$1,250.00</b></div>
+          <div class="total out"><span class="label">Expenses</span><b>$64.20</b></div>
+        </div>
+      </section>
+      <form class="card" onsubmit="return false">
+        <h3 style="margin:0">Add entry</h3>
+        <div class="toggle"><span class="on">Expense</span><span>Income</span></div>
+        <label class="field">Amount<div class="input amt">0.00</div></label>
+        <div class="row">
+          <label class="field">Category<div class="input">Other ▾</div></label>
+          <label class="field">Date<div class="input">10/04/2026</div></label>
+        </div>
+        <label class="field">Note (optional)<div class="input">e.g. Smith driveway job</div></label>
+        <div class="btn">Add</div>
+      </form>
+      <section class="card">
+        <h3>Entries</h3>
+        <ul>
+          <li class="in"><span class="dot">J</span><span class="meta"><b>Jobs</b><small>Smith driveway</small></span><span class="side"><b>+$250.00</b><small>Oct 3</small></span></li>
+          <li class="out"><span class="dot">G</span><span class="meta"><b>Gas</b><small>Truck fill-up</small></span><span class="side"><b>−$64.20</b><small>Oct 2</small></span></li>
+          <li class="in"><span class="dot">J</span><span class="meta"><b>Jobs</b><small>Patio + walkway</small></span><span class="side"><b>+$1,000.00</b><small>Oct 1</small></span></li>
+        </ul>
+      </section>
+    </div>`;
+  document.getElementById("options").innerHTML = themes.map(t => `
+    <div class="option">
+      <h2>${t.name}</h2><p>${t.desc}</p>
+      <div class="phone ${t.cls}">${mockup}</div>
+    </div>`).join("");
+</script>
+</body>
+</html>

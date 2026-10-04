@@ -5,6 +5,12 @@
   <!-- Makes the page fit phone screens instead of showing a zoomed-out desktop page -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Pocket Budget</title>
+  <!-- Colors the phone's browser bar to match the dark app -->
+  <meta name="theme-color" content="#0b0f14">
+  <!-- Space Grotesk font from Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <!-- "defer" waits to run app.js until the HTML has loaded -->
   <script src="app.js" defer></script>
@@ -85,6 +91,7 @@
       <ul class="entries" id="entries">
         <!-- Sample entries to preview the design; replaced by JavaScript in Step 3 -->
         <li class="entry income">
+          <span class="entry-badge" aria-hidden="true">J</span>
           <div class="entry-main">
             <span class="entry-category">Jobs</span>
             <span class="entry-note">Smith driveway</span>
@@ -95,6 +102,7 @@
           </div>
         </li>
         <li class="entry expense">
+          <span class="entry-badge" aria-hidden="true">G</span>
           <div class="entry-main">
             <span class="entry-category">Gas</span>
             <span class="entry-note">Truck fill-up</span>

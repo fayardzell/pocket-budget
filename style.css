@@ -1,22 +1,26 @@
 /* Color palette: change a color here and it updates everywhere */
 :root {
-  --bg: #f5f6f8;          /* page background: soft gray */
-  --card: #ffffff;        /* card background */
-  --ink: #1e293b;         /* main text: dark slate */
-  --muted: #64748b;       /* secondary text: labels, dates */
-  --line: #e2e8f0;        /* borders and dividers */
-  --income: #16a34a;      /* green */
-  --income-soft: #dcfce7;
-  --expense: #dc2626;     /* red */
-  --expense-soft: #fee2e2;
-  --radius: 14px;
+  color-scheme: dark;     /* tells the browser to draw built-in controls (date picker, dropdown) dark too */
+  --font: "Space Grotesk", system-ui, sans-serif;
+  --bg: #0b0f14;          /* page background: near-black */
+  --card: #121820;        /* card background */
+  --field: #0b0f14;       /* input background */
+  --ink: #e8edf2;         /* main text */
+  --muted: #8a96a3;       /* secondary text: labels, dates */
+  --line: #1f2731;        /* borders and dividers */
+  --income: #34d399;      /* green */
+  --income-soft: rgba(52, 211, 153, 0.12);
+  --expense: #fb7185;     /* red */
+  --expense-soft: rgba(251, 113, 133, 0.12);
+  --balance-card: linear-gradient(135deg, #065f46 0%, #0f766e 55%, #0e7490 100%);
+  --radius: 16px;
 }
 
 * { box-sizing: border-box; }
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-family: var(--font);
   background: var(--bg);
   color: var(--ink);
 }
@@ -29,43 +33,56 @@ main {
   gap: 16px;
 }
 
-h1 { font-size: 1.5rem; margin: 0; }
-h2 { font-size: 1rem; margin: 0 0 12px; }
+h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; margin: 0; }
+h2 { font-size: 1rem; font-weight: 500; margin: 0 0 12px; }
 .month { margin: 2px 0 0; color: var(--muted); }
 
 .card {
   background: var(--card);
+  border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 16px;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
 }
 
-/* ---------- Summary ---------- */
+/* ---------- Summary (the green "bank card") ---------- */
 .summary {
-  background: var(--ink);
+  position: relative;
+  overflow: hidden;       /* clips the decorative circles to the card */
+  background: var(--balance-card);
   color: #fff;
   border-radius: var(--radius);
-  padding: 20px 16px 16px;
+  padding: 20px 18px 16px;
   display: grid;
   gap: 16px;
 }
+/* Two see-through circles for the bank-card look. ::before/::after add them without extra HTML */
+.summary::before, .summary::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+}
+.summary::before { width: 220px; height: 220px; right: -70px; top: -90px; }
+.summary::after  { width: 140px; height: 140px; right: 40px;  top: 40px; }
+.summary > * { position: relative; }  /* keeps text above the circles */
+
 .label {
   display: block;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  opacity: 0.75;
+  letter-spacing: 0.08em;
+  opacity: 0.8;
 }
-.balance .amount { font-size: 2.2rem; font-weight: 700; }
+.balance .amount { font-size: 2.4rem; font-weight: 700; letter-spacing: -0.03em; }
 .totals { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .total {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.14);
   border-radius: 10px;
   padding: 10px 12px;
 }
-.total .amount { font-size: 1.15rem; font-weight: 600; }
-.total.income .amount { color: #4ade80; }   /* lighter green: readable on dark */
-.total.expense .amount { color: #f87171; }  /* lighter red: readable on dark */
+.total .amount { font-size: 1.15rem; font-weight: 700; }
+.total.income .amount  { color: #bbf7d0; }   /* pale green: readable on the green card */
+.total.expense .amount { color: #fecaca; }   /* pale red */
 .amount { font-variant-numeric: tabular-nums; }  /* digits line up */
 
 /* ---------- Form ---------- */
@@ -75,16 +92,16 @@ h2 { font-size: 1rem; margin: 0 0 12px; }
 .type-toggle {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  background: var(--bg);
-  border-radius: 10px;
+  background: var(--field);
+  border-radius: 12px;
   padding: 4px;
 }
 .type-toggle input { position: absolute; opacity: 0; } /* hide the real radio circles */
 .type-toggle label {
   text-align: center;
   padding: 10px;
-  border-radius: 8px;
-  font-weight: 600;
+  border-radius: 9px;
+  font-weight: 700;
   color: var(--muted);
   cursor: pointer;
 }
@@ -103,22 +120,23 @@ input, select, button { font: inherit; }
   color: var(--ink);
   padding: 11px 12px;
   border: 1px solid var(--line);
-  border-radius: 10px;
-  background: #fff;
+  border-radius: 12px;
+  background: var(--field);
 }
+.field input::placeholder { color: #4b5563; }
 .field input:focus, .field select:focus {
   outline: none;
-  border-color: var(--ink);
+  border-color: var(--income);
 }
-#amount { font-size: 1.4rem; font-weight: 600; }
+#amount { font-size: 1.5rem; font-weight: 700; }
 
 .add-btn {
   padding: 14px;
   border: 0;
-  border-radius: 10px;
-  background: var(--ink);
-  color: #fff;
-  font-weight: 600;
+  border-radius: 12px;
+  background: var(--income);
+  color: #062018;      /* very dark green text on the bright button */
+  font-weight: 700;
   font-size: 1rem;
   cursor: pointer;
 }
@@ -128,20 +146,31 @@ input, select, button { font: inherit; }
 .entries { list-style: none; margin: 0; padding: 0; }
 .entry {
   display: flex;
-  justify-content: space-between;
+  align-items: center;
   gap: 12px;
-  padding: 12px 0 12px 12px;
+  padding: 12px 0;
   border-bottom: 1px solid var(--line);
-  border-left: 3px solid transparent;
 }
 .entry:last-child { border-bottom: 0; }
-.entry.income  { border-left-color: var(--income); }
-.entry.expense { border-left-color: var(--expense); }
 
-.entry-main, .entry-side { display: grid; gap: 2px; }
-.entry-side { text-align: right; }
-.entry-category { font-weight: 600; }
+/* Rounded square with the category's first letter */
+.entry-badge {
+  width: 38px;
+  height: 38px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
+  font-weight: 700;
+}
+.entry.income  .entry-badge { background: var(--income-soft);  color: var(--income); }
+.entry.expense .entry-badge { background: var(--expense-soft); color: var(--expense); }
+
+.entry-main { flex: 1; display: grid; gap: 2px; min-width: 0; }
+.entry-side { display: grid; gap: 2px; text-align: right; }
+.entry-category { font-weight: 700; }
 .entry-note, .entry-date { font-size: 0.85rem; color: var(--muted); }
-.entry-amount { font-weight: 600; font-variant-numeric: tabular-nums; }
+.entry-note { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } /* long notes get "…" */
+.entry-amount { font-weight: 700; font-variant-numeric: tabular-nums; }
 .entry.income  .entry-amount { color: var(--income); }
 .entry.expense .entry-amount { color: var(--expense); }
