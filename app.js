@@ -45,6 +45,10 @@ const dateInput = document.getElementById("date");
 const noteInput = document.getElementById("note");
 const list = document.getElementById("entries");
 const emptyMessage = document.getElementById("empty");
+const monthLabel = document.getElementById("month-label");
+const balanceEl = document.getElementById("balance");
+const incomeTotalEl = document.getElementById("income-total");
+const expenseTotalEl = document.getElementById("expense-total");
 
 // ===== Helpers =====
 
@@ -85,8 +89,30 @@ function fillCategories() {
   categorySelect.value = options[options.length - 1];
 }
 
-// ===== Draw the list from `entries` =====
+// ===== Draw the summary card: totals for the current month =====
+function renderSummary() {
+  const thisMonth = todayISO().slice(0, 7); // "2026-10-04" -> "2026-10"
+
+  let incomeCents = 0;
+  let expenseCents = 0;
+  for (const entry of entries) {
+    if (!entry.date.startsWith(thisMonth)) continue; // skip other months
+    if (entry.type === "income") incomeCents += entry.amountCents;
+    else expenseCents += entry.amountCents;
+  }
+  const balanceCents = incomeCents - expenseCents;
+
+  monthLabel.textContent = new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" });
+  incomeTotalEl.textContent = formatMoney(incomeCents);
+  expenseTotalEl.textContent = formatMoney(expenseCents);
+  balanceEl.textContent = formatMoney(balanceCents); // negative shows as "-$12.00"
+  balanceEl.classList.toggle("negative", balanceCents < 0);
+}
+
+// ===== Draw everything from `entries` =====
 function render() {
+  renderSummary();
+
   // Newest date first; for the same date, the most recently added first
   const sorted = [...entries].sort((a, b) =>
     b.date.localeCompare(a.date) || b.id.localeCompare(a.id)
