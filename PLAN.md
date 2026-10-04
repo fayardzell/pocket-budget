@@ -1,5 +1,8 @@
 # Pocket Budget: plan
 
+**Live:** https://pocket-budget1.netlify.app · **Code:** https://github.com/fayardzell/pocket-budget
+**Status:** v1 shipped 2026-10-04. Next: use it for real for a few days.
+
 Phase 1 "Pocket tool" project from the Builder's Roadmap.
 
 ## What it is
